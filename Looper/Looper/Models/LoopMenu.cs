@@ -10,6 +10,7 @@ using Avalonia.Logging;
 using Avalonia.Threading;
 using System.Threading.Tasks;
 using Logger = NLog.Logger;
+using System;
 
 namespace Looper
 {
@@ -34,8 +35,8 @@ namespace Looper
         {
             Recorder = new AudioRecorder();
             Player = new AudioPlayer();
-
         }
+
 
 
         #region Audio
@@ -75,6 +76,7 @@ namespace Looper
             {
                 Player.StartPlaying(Recorder.MemoryStream, true);
                 Player.Volume = Volume; // Ustawienie początkowej głośności
+                Player.LoopStream.OnResetProgressBar += LoopStream_OnResetProgressBar;
             }
             else
             {
@@ -126,9 +128,31 @@ namespace Looper
             set
             {
                 progress = value;
+
                 OnPropertyChanged(nameof(Progress));
             }
         }
+
+
+        private void LoopStream_OnResetProgressBar(LoopStream loopStream)
+        {
+            Progress = 0;
+            SmoothlyTransition(LengthInSeconds);
+        }
+
+        public async Task SmoothlyTransition(double lengthInSeconds)
+        {
+            double targetValue = 100;
+            Progress = 0;
+            double step = targetValue / (lengthInSeconds * 100); // 1000 steps per second
+
+            for (int i = 0; i <= lengthInSeconds * 10; i++)
+            {
+                Progress = i * step;
+                await Task.Delay(10);
+            }
+        }
+
 
 
         #endregion
@@ -142,10 +166,11 @@ namespace Looper
             {
                 delay = value;
                 OnPropertyChanged(nameof(Delay));
-                if (Player!= null)
+                if (Player == null)
                 {
-                    Player.Delay((int)delay); // Aktualizacja głośności w AudioPlayer
+                    return;
                 }
+                Player.Delay((int)delay); // Aktualizacja głośności w AudioPlayer
             }
         }
         #endregion
@@ -197,7 +222,6 @@ namespace Looper
         }
 
         #endregion
-
 
         #region Reverb
         private double reverbLevel;

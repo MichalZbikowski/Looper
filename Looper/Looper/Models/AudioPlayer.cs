@@ -8,6 +8,7 @@ using NAudio.Wave.SampleProviders;
 using NAudio.Wave;
 using NLog;
 using Looper.Models.AudioEffects;
+using System.Numerics;
 
 namespace Looper
 {
@@ -32,6 +33,8 @@ namespace Looper
         /// VolumeSampleProvider object for adjusting volume
         /// </summary>
         private VolumeSampleProvider? volumeSampleProvider;
+        private SmbPitchShiftingSampleProvider pitchShiftingSampleProvider;
+
 
         private ReverbSampleProvider? reverbSampleProvider = null;
 
@@ -67,7 +70,8 @@ namespace Looper
                     // Add effects
                     int balance = 0;
                     sampleProvider = new PanningSampleProvider(sampleProvider) { Pan = balance };
-                    volumeSampleProvider = new VolumeSampleProvider(sampleProvider) { Volume = (float)Volume };
+                    pitchShiftingSampleProvider = new SmbPitchShiftingSampleProvider(sampleProvider);
+                    volumeSampleProvider = new VolumeSampleProvider(pitchShiftingSampleProvider) { Volume = (float)Volume };
 
                     logger.Info("Started playback");
                     WaveOut = new WaveOutEvent();
@@ -109,15 +113,11 @@ namespace Looper
         #region Delay
 
 
-
-        private double delay;
-        public double Delay
+        public async void Delay(int miliseconds)
         {
-            get { return delay; }
-            set
-            {
-                delay = value;
-            }
+            WaveOut.Stop();
+            await Task.Delay(miliseconds);
+            WaveOut.Play();
         }
 
         #endregion
@@ -155,6 +155,22 @@ namespace Looper
             if (volumeSampleProvider != null)
             {
                 volumeSampleProvider.Volume = (float)finalVolume;
+            }
+        }
+
+        #endregion
+
+        #region Tonacja
+
+        private double semitones;
+
+        public double Semitones
+        {
+            get { return semitones; }
+            set
+            {
+                semitones = value;
+                pitchShiftingSampleProvider.PitchFactor = (float)Math.Pow(2, semitones / 12);
             }
         }
 

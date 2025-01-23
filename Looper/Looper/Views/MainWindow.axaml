@@ -9,12 +9,44 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="Looper">
 
+	<Window.KeyBindings>
+		<KeyBinding Gesture="Space" Command="{Binding ToggleLoopCommand}">
+			<KeyBinding.CommandParameter>
+				<x:Int32>0</x:Int32>
+			</KeyBinding.CommandParameter>
+		</KeyBinding>
+		<KeyBinding Gesture="Ctrl+Space" Command="{Binding DeleteLoopCommand}">
+			<KeyBinding.CommandParameter>
+				<x:Int32>0</x:Int32>
+			</KeyBinding.CommandParameter>
+		</KeyBinding>
+		<KeyBinding Gesture="NumPad0" Command="{Binding ToggleLoopCommand}">
+			<KeyBinding.CommandParameter>
+				<x:Int32>1</x:Int32>
+			</KeyBinding.CommandParameter>
+		</KeyBinding>
+		<KeyBinding Gesture="Ctrl+NumPad0" Command="{Binding DeleteLoopCommand}">
+			<KeyBinding.CommandParameter>
+				<x:Int32>1</x:Int32>
+			</KeyBinding.CommandParameter>
+		</KeyBinding>
+		<KeyBinding Gesture="Enter" Command="{Binding ToggleLoopCommand}">
+			<KeyBinding.CommandParameter>
+				<x:Int32>2</x:Int32>
+			</KeyBinding.CommandParameter>
+		</KeyBinding>
+		<KeyBinding Gesture="Ctrl+Enter" Command="{Binding DeleteLoopCommand}">
+			<KeyBinding.CommandParameter>
+				<x:Int32>2</x:Int32>
+			</KeyBinding.CommandParameter>
+		</KeyBinding>
+	</Window.KeyBindings>
 	<Design.DataContext>
 		<!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
-
+	
 
 
 	<StackPanel>
@@ -35,6 +67,8 @@
 				<ProgressBar x:Name="LoopProgressBar0" Minimum="0" Maximum="100" Height="20" Width="300" Value="{Binding LoopMenus[0].Progress, Mode=OneWay}"/>
 				<Slider x:Name="VolumeSlider0" Minimum="0" Maximum="1" Value="{Binding Volumes[0].Value, Mode=TwoWay}" TickFrequency="0.01" IsSnapToTickEnabled="True" Width="100" />
 				<TextBox Width="50" Text="{Binding Delays[0].Value, Mode=TwoWay}" />
+				<TextBox Width="50" Text="{Binding SemitonesItems[0].Value, Mode=TwoWay}" />
+
 			</StackPanel>
 		</StackPanel>
 		<StackPanel>
@@ -53,6 +87,8 @@
 				<ProgressBar x:Name="LoopProgressBar1" Minimum="0" Maximum="100" Height="20" Width="300" Value="{Binding LoopMenus[1].Progress, Mode=OneWay}"/>
 				<Slider x:Name="VolumeSlider1" Minimum="0" Maximum="1" Value="{Binding Volumes[1].Value, Mode=TwoWay}" TickFrequency="0.01" IsSnapToTickEnabled="True" Width="100" />
 				<TextBox Width="50" Text="{Binding Delays[1].Value}" x:Name="TextBox2" />
+				<TextBox Width="50" Text="{Binding SemitonesItems[1].Value, Mode=TwoWay}" />
+
 			</StackPanel>
 		</StackPanel>
 		<StackPanel>
@@ -71,6 +107,8 @@
 				<ProgressBar x:Name="LoopProgressBar2" Minimum="0" Maximum="100" Height="20" Width="300" Value="{Binding LoopMenus[2].Progress}"/>
 				<Slider x:Name="VolumeSlider2" Minimum="0" Maximum="1" Value="{Binding Volumes[2].Value, Mode=TwoWay}" TickFrequency="0.01" IsSnapToTickEnabled="True" Width="100" />
 				<TextBox Width="50" Text="{Binding Delays[2].Value}"/>
+				<TextBox Width="50" Text="{Binding SemitonesItems[2].Value, Mode=TwoWay}" />
+
 			</StackPanel>
 		</StackPanel>
 

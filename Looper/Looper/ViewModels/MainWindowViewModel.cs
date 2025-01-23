@@ -14,7 +14,6 @@ namespace Looper.ViewModels
 {
     public partial class MainWindowViewModel : ViewModelBase
     {
-        public string Greeting { get; } = "Welcome to Avalonia!";
         #region Komendy
         public ObservableCollection<LoopMenu> LoopMenus { get; set; }
         public ICommand StartRecordingCommand { get; }
@@ -60,7 +59,16 @@ namespace Looper.ViewModels
                 new NumericItem { Value = 0 },
                 new NumericItem { Value = 0 },
                 new NumericItem { Value = 0 }
+            ]; 
+            
+            SemitonesItems =
+            [
+                new NumericItem { Value = 0 },
+                new NumericItem { Value = 0 },
+                new NumericItem { Value = 0 }
             ];
+
+
         }
 
 
@@ -143,10 +151,6 @@ namespace Looper.ViewModels
             int index = Convert.ToInt16(loopIndex);
             LoopMenus[index].StartRecording();
 
-
-            Debug.WriteLine(LoopMenus[index].ToString);
-            Debug.WriteLine(Delays[index]);
-            Debug.WriteLine(LoopMenus[index].CanStopRecording);
             //gdy checkbox do ovedubu wlaczony
             if (Overdubs[index] && (LoopMenus[OverDubLoopNumbers[index]-1].LengthInSeconds)>0)
             {
@@ -170,9 +174,12 @@ namespace Looper.ViewModels
             LoopMenus[Convert.ToInt16(loopIndex)].StopRecording();
         }
 
+
+
         private bool CanStopRecording(object loopIndex)
         {
-            return true;
+            return true; //LoopMenus[Convert.ToInt16(loopIndex)].CanStopRecording;  //nie dziala i chuj, zostawiam to tak. W wpf bez problemu a teraz nawet jak
+                                                                                    //((Looper.Models.RelayCommand<object>)DeleteLoopCommand).RaiseCanExecuteChanged(); to i tak sie odswieza tylko raz
         }
 
         /// <summary>
@@ -195,7 +202,7 @@ namespace Looper.ViewModels
 
         private bool CanStopLooping(object loopIndex)
         {
-            return LoopMenus[Convert.ToInt16(loopIndex)].CanStopLooping;
+            return true;//LoopMenus[Convert.ToInt16(loopIndex)].CanStopLooping;
         }
 
         private void DeleteLoop(object loopIndex)
@@ -205,7 +212,7 @@ namespace Looper.ViewModels
 
         private bool CanDeleteLoop(object loopIndex)
         {
-            return LoopMenus[Convert.ToInt16(loopIndex)].CanDeleteLoop;
+            return true;//LoopMenus[Convert.ToInt16(loopIndex)].CanDeleteLoop;
         }
 
         #endregion
@@ -325,6 +332,52 @@ namespace Looper.ViewModels
                 OnPropertyChanged(nameof(MasterVolume));
             }
         }
+        #endregion
+
+        #region Tonacja
+
+        private ObservableCollection<NumericItem> _semitonesItems;
+        public ObservableCollection<NumericItem> SemitonesItems
+        {
+            get { return _semitonesItems; }
+            set
+            {
+                if (_semitonesItems != null)
+                {
+                    foreach (var delay in _semitonesItems)
+                    {
+                        delay.PropertyChanged -= Delay_PropertyChanged;
+                    }
+                }
+
+                _semitonesItems = value;
+
+                if (_semitonesItems != null)
+                {
+                    foreach (var delay in _semitonesItems)
+                    {
+                        delay.PropertyChanged += SemitoneItem_PropertyChanged;
+                    }
+                }
+
+                OnPropertyChanged(nameof(SemitonesItems));
+            }
+        }
+
+        private void SemitoneItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(NumericItem.Value))
+            {
+                var semitonesItem = sender as NumericItem;
+                if (semitonesItem == null)
+                {
+                    return;
+                }
+                int index = SemitonesItems.IndexOf(semitonesItem);
+                LoopMenus[index].Semitones = semitonesItem.Value;
+            }
+        }
+
         #endregion
 
         #region Delay

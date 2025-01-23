@@ -39,5 +39,7 @@ namespace Looper.Views
             Regex regex = new(@"[^0-9-]+"); // Regex that matches disallowed text, including minus sign
             return !regex.IsMatch(text);
         }
+
+
     }
 }
