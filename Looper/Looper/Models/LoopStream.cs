@@ -7,7 +7,7 @@ namespace Looper
     public delegate void ResetProgressBarDelegate(LoopStream loopStream);
     public class LoopStream(WaveStream sourceStream) : WaveStream
     {
-        private readonly WaveStream sourceStream;
+
         private long position;
         public double PositionPercent => (double)Position / sourceStream.Length;
 

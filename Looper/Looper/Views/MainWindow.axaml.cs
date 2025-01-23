@@ -15,7 +15,7 @@ namespace Looper.Views
             textBox1.AddHandler(TextInputEvent, NumericTextBox_TextInput, RoutingStrategies.Tunnel);
 
             var textBox2 = this.FindControl<TextBox>("TextBox2");
-            //textBox2.AddHandler(TextInputEvent, NumericNegativeTextBox_TextInput, RoutingStrategies.Tunnel);
+            textBox2.AddHandler(TextInputEvent, NumericNegativeTextBox_TextInput, RoutingStrategies.Tunnel);
         }
 
         private void NumericTextBox_TextInput(object sender, TextInputEventArgs e)

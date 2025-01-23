@@ -34,13 +34,15 @@ namespace Looper
         {
             Recorder = new AudioRecorder();
             Player = new AudioPlayer();
+            Debug.WriteLine("LoopMenu created");
+
         }
 
-        private DispatcherTimer progressTimer;
 
         #region Audio
         public void StartRecording()
         {
+            Debug.WriteLine("StartRecording");
             if (!IsRecording && !IsRecorded)
             {
                 Recorder.StartRecording();
@@ -73,11 +75,8 @@ namespace Looper
         {
             if (IsRecorded && !IsPlaying)
             {
-                Player.StartPlaying(Recorder?.MemoryStream, true);
+                Player.StartPlaying(Recorder.MemoryStream, true);
                 Player.Volume = Volume; // Ustawienie początkowej głośności
-
-                UpdateProgress(null);
-                Player.LoopStream.OnResetProgressBar += UpdateProgress;
             }
             else
             {
@@ -91,7 +90,7 @@ namespace Looper
             if (Player.IsPlaying)
             {
                 Player.StopPlaying();
-                Player.LoopStream.OnResetProgressBar -= UpdateProgress;
+ 
             }
             else
             {

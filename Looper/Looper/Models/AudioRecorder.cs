@@ -2,6 +2,7 @@
 using NAudio.Utils;
 using NAudio.Wave;
 using NLog;
+using System.Diagnostics;
 using System.IO;
 
 namespace Looper
@@ -39,6 +40,7 @@ namespace Looper
             if (!IsRecording)
             {
                 logger.Info("Recording started");
+
                 MemoryStream = new MemoryStream();
                 WaveIn = new WaveInEvent { WaveFormat = new WaveFormat(44100, 1) };
                 WaveIn.DataAvailable += OnDataAvailable;

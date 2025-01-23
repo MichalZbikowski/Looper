@@ -35,24 +35,31 @@ namespace Looper.ViewModels
         {
             LoopMenus = [];
             InitializeLoopMenus();
-            StartRecordingCommand = new RelayCommand<object>(StartRecording, CanStartRecording);
-            StopRecordingCommand = new RelayCommand<object>(StopRecording, CanStopRecording);
-            ToggleLoopCommand = new RelayCommand<object>(ToggleLoop);
-            StartLoopingCommand = new RelayCommand<object>(StartLooping, CanStartLooping);
-            StopLoopingCommand = new RelayCommand<object>(StopLooping, CanStopLooping);
-            DeleteLoopCommand = new RelayCommand<object>(DeleteLoop, CanDeleteLoop);
-            StartMetronomeCommand = new RelayCommand<object>(StartMetronome, CanStartMetronome);
-            StopMetronomeCommand = new RelayCommand<object>(StopMetronome, CanStopMetronome);
+            StartRecordingCommand = new Looper.Models.RelayCommand<object>(StartRecording, CanStartRecording);
+            StopRecordingCommand = new Looper.Models.RelayCommand<object>(StopRecording, CanStopRecording);
+            ToggleLoopCommand = new Looper.Models.RelayCommand<object>(ToggleLoop);
+            StartLoopingCommand = new Looper.Models.RelayCommand<object>(StartLooping, CanStartLooping);
+            StopLoopingCommand = new Looper.Models.RelayCommand<object>(StopLooping, CanStopLooping);
+            DeleteLoopCommand = new Looper.Models.RelayCommand<object>(DeleteLoop, CanDeleteLoop);
+            StartMetronomeCommand = new Looper.Models.RelayCommand<object>(StartMetronome, CanStartMetronome);
+            StopMetronomeCommand = new Looper.Models.RelayCommand<object>(StopMetronome, CanStopMetronome);
 
 
             MasterVolume = 0.5;
             Overdubs = [false, false, false];
-            OverDubLoopNumbers = [0, 0, 0];
+            OverDubLoopNumbers = [1, 1, 1];
             Volumes =
             [
                 new NumericItem { Value = 0.5 },
                 new NumericItem { Value = 0.5 },
                 new NumericItem { Value = 0.5 }
+            ];
+
+            Delays=
+            [
+                new NumericItem { Value = 0 },
+                new NumericItem { Value = 0 },
+                new NumericItem { Value = 0 }
             ];
         }
 
@@ -135,14 +142,15 @@ namespace Looper.ViewModels
         {
             int index = Convert.ToInt16(loopIndex);
             LoopMenus[index].StartRecording();
-            Debug.WriteLine(LoopMenus[index].LengthInSeconds);
-            Debug.WriteLine(LoopMenus[OverDubLoopNumbers[index]].LengthInSeconds + "Aaaaaaaaaaaaaaaaaaaaaa");
 
+
+            Debug.WriteLine(LoopMenus[index].ToString);
+            Debug.WriteLine(Delays[index]);
+            Debug.WriteLine(LoopMenus[index].CanStopRecording);
             //gdy checkbox do ovedubu wlaczony
-            if (Overdubs[index])
+            if (Overdubs[index] && (LoopMenus[OverDubLoopNumbers[index]-1].LengthInSeconds)>0)
             {
-                await Task.Delay(TimeSpan.FromSeconds(LoopMenus[OverDubLoopNumbers[index - 1]].LengthInSeconds));
-                LoopMenus[index].StartRecording();
+                await Task.Delay(TimeSpan.FromSeconds(LoopMenus[OverDubLoopNumbers[index]-1].LengthInSeconds));
                 LoopMenus[index].StopRecording();
                 LoopMenus[index].StartLooping();
             }
@@ -164,7 +172,7 @@ namespace Looper.ViewModels
 
         private bool CanStopRecording(object loopIndex)
         {
-            return LoopMenus[Convert.ToInt16(loopIndex)].CanStopRecording;
+            return true;
         }
 
         /// <summary>
@@ -177,7 +185,7 @@ namespace Looper.ViewModels
 
         private bool CanStartLooping(object loopIndex)
         {
-            return LoopMenus[Convert.ToInt16(loopIndex)].CanStartLooping;
+            return true;//LoopMenus[Convert.ToInt16(loopIndex)].CanStartLooping;
         }
 
         private void StopLooping(object loopIndex)
@@ -364,6 +372,7 @@ namespace Looper.ViewModels
         }
 
         #endregion
+
         #region ProgressBar
         //------------------------------------PROGRES------------------------------------
 
