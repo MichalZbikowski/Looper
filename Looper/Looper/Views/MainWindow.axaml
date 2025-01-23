@@ -1,0 +1,87 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Looper.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Looper.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Looper">
+
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
+
+
+
+	<StackPanel>
+		<StackPanel>
+			<StackPanel Orientation="Horizontal" Margin="5">
+				<Label Content="Pętla 1 (Spacja):" VerticalAlignment="Center" Margin="5" Width="150"/>
+				<Button Content="Start Recording" Command="{Binding StartRecordingCommand}" CommandParameter="0" />
+				<Button Content="Stop Recording" Command="{Binding StopRecordingCommand}" CommandParameter="0" />
+				<Button Content="Start Looping" Command="{Binding StartLoopingCommand}" CommandParameter="0" />
+				<Button Content="Stop Looping" Command="{Binding StopLoopingCommand}" CommandParameter="0" />
+				<Button Content="Delete Loop" Command="{Binding DeleteLoopCommand}" CommandParameter="0" />
+				<CheckBox Content="RECORD AS OVERDUB FOR LOOP: " IsChecked="{Binding Overdubs[0]}" />
+				<TextBox Width="50" Text="{Binding OverDubLoopNumbers[0]}"/>
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal" Margin="5">
+				<Label Width="150" Margin="5"/>
+				<ProgressBar x:Name="LoopProgressBar0" Minimum="0" Maximum="100" Height="20" Width="300" Value="{Binding LoopMenus[0].Progress, Mode=OneWay}"/>
+				<Slider x:Name="VolumeSlider0" Minimum="0" Maximum="1" Value="{Binding Volumes[0].Value, Mode=TwoWay}" TickFrequency="0.01" IsSnapToTickEnabled="True" Width="100" />
+				<TextBox Width="50" Text="{Binding Delays[0]}" />
+			</StackPanel>
+		</StackPanel>
+		<StackPanel>
+			<StackPanel Orientation="Horizontal" Margin="5">
+				<Label Content="Pętla 2 (NUMPAD0):" VerticalAlignment="Center" Margin="5" Width="150"/>
+				<Button Content="Start Recording" Command="{Binding StartRecordingCommand}" CommandParameter="1" />
+				<Button Content="Stop Recording" Command="{Binding StopRecordingCommand}" CommandParameter="1" />
+				<Button Content="Start Looping" Command="{Binding StartLoopingCommand}" CommandParameter="1" />
+				<Button Content="Stop Looping" Command="{Binding StopLoopingCommand}" CommandParameter="1" />
+				<Button Content="Delete Loop" Command="{Binding DeleteLoopCommand}" CommandParameter="1" />
+				<CheckBox Content="RECORD AS OVERDUB FOR LOOP: " IsChecked="{Binding Overdubs[1]}" />
+				<TextBox Width="50" Text="{Binding OverDubLoopNumbers[1]}" x:Name="TextBox1"/>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal" Margin="5">
+				<Label Width="150" Margin="5"/>
+				<ProgressBar x:Name="LoopProgressBar1" Minimum="0" Maximum="100" Height="20" Width="300" Value="{Binding LoopMenus[1].Progress, Mode=OneWay}"/>
+				<Slider x:Name="VolumeSlider1" Minimum="0" Maximum="1" Value="{Binding Volumes[1].Value, Mode=TwoWay}" TickFrequency="0.01" IsSnapToTickEnabled="True" Width="100" />
+				<TextBox Width="50" Text="{Binding Delays[1]}" />
+			</StackPanel>
+		</StackPanel>
+		<StackPanel>
+			<StackPanel Orientation="Horizontal" Margin="5">
+				<Label Content="Pętla 3 (ENTER):" VerticalAlignment="Center" Margin="5" Width="150"/>
+				<Button Content="Start Recording" Command="{Binding StartRecordingCommand}" CommandParameter="2" />
+				<Button Content="Stop Recording" Command="{Binding StopRecordingCommand}" CommandParameter="2" />
+				<Button Content="Start Looping" Command="{Binding StartLoopingCommand}" CommandParameter="2" />
+				<Button Content="Stop Looping" Command="{Binding StopLoopingCommand}" CommandParameter="2" />
+				<Button Content="Delete Loop" Command="{Binding DeleteLoopCommand}" CommandParameter="2" />
+				<CheckBox Content="RECORD AS OVERDUB FOR LOOP: " IsChecked="{Binding Overdubs[2]}" />
+				<TextBox Width="50" Text="{Binding OverDubLoopNumbers[2]}" />
+			</StackPanel>
+			<StackPanel Orientation="Horizontal" Margin="5">
+				<Label Width="150" Margin="5"/>
+				<ProgressBar x:Name="LoopProgressBar2" Minimum="0" Maximum="100" Height="20" Width="300" Value="{Binding LoopMenus[2].Progress}"/>
+				<Slider x:Name="VolumeSlider2" Minimum="0" Maximum="1" Value="{Binding Volumes[2].Value, Mode=TwoWay}" TickFrequency="0.01" IsSnapToTickEnabled="True" Width="100" />
+				<TextBox Width="50" Text="{Binding Delays[2]}"/>
+			</StackPanel>
+		</StackPanel>
+
+		<Slider x:Name="MasterVolumeSlider" Minimum="0" Maximum="1" Value="{Binding MasterVolume}" TickFrequency="0.0001" Width="300" />
+		<Label Content="USUŃ PETLE KLIKAJĄC PRZYCISK PETLI ORAZ CTRL" VerticalAlignment="Center" Margin="5" Width="300" HorizontalContentAlignment="Center"/>
+		<StackPanel Orientation="Horizontal" Margin="5">
+			<Label Content="Metronom:" VerticalAlignment="Center" Margin="5" Width="150"/>
+			<Button Content="Start Metronome" Command="{Binding StartMetronomeCommand}" CommandParameter="2" />
+			<Button Content="Stop Metronome" Command="{Binding StopMetronomeCommand}" CommandParameter="2" />
+			<TextBox Text="{Binding MetronomeBpm, UpdateSourceTrigger=PropertyChanged}"  FontSize="15" Width="50" VerticalAlignment="Center"/>
+			<Slider x:Name="MetronomeVolumeSlider" Minimum="0" Maximum="1" Value="{Binding MetronomeVolume, Mode=TwoWay}" TickFrequency="0.01" IsSnapToTickEnabled="True" Width="100" />
+		</StackPanel>
+	</StackPanel>
+</Window>
