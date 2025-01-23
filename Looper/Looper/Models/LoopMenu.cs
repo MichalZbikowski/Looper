@@ -34,7 +34,6 @@ namespace Looper
         {
             Recorder = new AudioRecorder();
             Player = new AudioPlayer();
-            Debug.WriteLine("LoopMenu created");
 
         }
 
@@ -42,7 +41,6 @@ namespace Looper
         #region Audio
         public void StartRecording()
         {
-            Debug.WriteLine("StartRecording");
             if (!IsRecording && !IsRecorded)
             {
                 Recorder.StartRecording();
@@ -133,15 +131,6 @@ namespace Looper
         }
 
 
-        private async void UpdateProgress(LoopStream loopStream)
-        {
-            Progress = 0;
-            for (int i = 0; i < 100; i++)
-            {
-                Progress = i;
-                await Task.Delay((int)(LengthInSeconds * 10));
-            }
-        }
         #endregion
 
         #region Delay
@@ -153,9 +142,9 @@ namespace Looper
             {
                 delay = value;
                 OnPropertyChanged(nameof(Delay));
-                if (Player != null)
+                if (Player!= null)
                 {
-                    Player.Delay = delay; // Aktualizacja głośności w AudioPlayer
+                    Player.Delay((int)delay); // Aktualizacja głośności w AudioPlayer
                 }
             }
         }
@@ -188,6 +177,27 @@ namespace Looper
             }
         }
         #endregion
+
+        #region Tonacja
+
+        private double semitones;
+
+        public double Semitones
+        {
+            get { return semitones; }
+            set
+            {
+                semitones = value;
+                OnPropertyChanged(nameof(Semitones));
+                if (Player != null)
+                {
+                    Player.Semitones = semitones; // Aktualizacja tonacji w AudioPlayer
+                }
+            }
+        }
+
+        #endregion
+
 
         #region Reverb
         private double reverbLevel;
