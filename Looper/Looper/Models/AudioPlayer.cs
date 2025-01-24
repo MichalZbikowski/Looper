@@ -110,17 +110,7 @@ namespace Looper
 
         #endregion
 
-        #region Delay
 
-
-        public async void Delay(int miliseconds)
-        {
-            WaveOut.Stop();
-            await Task.Delay(miliseconds);
-            WaveOut.Play();
-        }
-
-        #endregion
 
         #region Glosość
         private double volume;

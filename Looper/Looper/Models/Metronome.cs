@@ -5,14 +5,24 @@ using System.Text;
 using System.Threading.Tasks;
 using NLog;
 using System.Timers;
+using System.Diagnostics;
+using NAudio.Wave;
+using HarfBuzzSharp;
+using Tmds.DBus.Protocol;
+using System.IO;
+using Avalonia.Platform;
+using System.Reflection;
 
-namespace Looper.Models
+
+
+namespace Looper
 {
     class Metronome
     {
 
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly Timer timer;
+
         private int iterator = 0;
         private int bpm;
 
@@ -53,6 +63,8 @@ namespace Looper.Models
             }
         }
 
+        public MemoryStream ClickStream { get; set; }
+        public string filePath;
 
         public Metronome()
         {
@@ -71,11 +83,11 @@ namespace Looper.Models
         public void Stop() { timer.Stop(); }
 
 
+
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            try
-            {
-                System.IO.MemoryStream clickStream;
+
+                MemoryStream clickStream;
                 AudioPlayer player = new()
                 {
                     Volume = volume,
@@ -84,20 +96,51 @@ namespace Looper.Models
 
                 if (iterator == 4)
                 {
-                    clickStream = new System.IO.MemoryStream();
+                    string relativeFilePath = @"..\..\..\Assets\AudioFiles\Metronome\clickAccent.wav";
+                    clickStream = new MemoryStream(ReadFileToByteArray(relativeFilePath));
                     iterator = 0;
                 }
                 else
                 {
-                    clickStream = new System.IO.MemoryStream();//nie wiem jak to zrobić
+                    string relativeFilePath = @"..\..\..\Assets\AudioFiles\Metronome\click.wav";
+                    clickStream = new MemoryStream(ReadFileToByteArray(relativeFilePath));
                 }
                 player.StartPlaying(clickStream, false);
                 iterator++;
+           
+
+        }
+
+
+        public byte[] ReadFileToByteArray(string relativeFilePath)
+        {
+            try
+            {
+                // Get the base directory where the executable is running
+                string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
+                // Combine the base directory with the relative file path
+                string fullFilePath = Path.Combine(baseDirectory, relativeFilePath);
+
+                // Ensure the file exists
+                if (!File.Exists(fullFilePath))
+                {
+                    Debug.WriteLine($"File not found: {fullFilePath}");
+                    return null;
+                }
+
+                // Read the file into a byte array
+                byte[] fileBytes = File.ReadAllBytes(fullFilePath);
+                Console.WriteLine("File successfully read into byte array.");
+                return fileBytes;
             }
             catch (Exception ex)
-            { // Log or handle the exception
-                logger.Error($"Error: {ex.Message}");
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return null;
             }
         }
     }
+
 }
+

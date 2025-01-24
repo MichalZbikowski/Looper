@@ -252,9 +252,10 @@ namespace Looper.ViewModels
             metronome.Start();
         }
 
+
         private bool CanStartMetronome(object liczba)
         {
-            return !metronome.IsPlaying && metronome.Bpm != 0;
+            return true;//!metronome.IsPlaying && metronome.Bpm != 0;
         }
         private void StopMetronome(object liczba)
         {
@@ -262,7 +263,7 @@ namespace Looper.ViewModels
         }
         private bool CanStopMetronome(object liczba)
         {
-            return metronome.IsPlaying;
+            return true;// metronome.IsPlaying;
         }
 
         #endregion

@@ -29,7 +29,7 @@ namespace Looper
         public bool CanStopLooping => IsRecorded && IsPlaying;
         public bool CanDeleteLoop => IsRecorded && !IsRecording;
 
-
+        private static Timer aTimer;
 
         public LoopMenu()
         {
@@ -60,7 +60,6 @@ namespace Looper
                 Recorder.StopRecording();
                 isRecording = false;
                 LengthInSeconds = (double)Recorder.MemoryStream.Length / (44100 * 2);
-                logger.Info($"LoopMenu StopRecording, audio length: {LengthInSeconds}");
             }
             else
             {
@@ -76,7 +75,13 @@ namespace Looper
             {
                 Player.StartPlaying(Recorder.MemoryStream, true);
                 Player.Volume = Volume; // Ustawienie początkowej głośności
-                Player.LoopStream.OnResetProgressBar += LoopStream_OnResetProgressBar;
+                aTimer = new Timer(1);
+
+                // Hook up the Elapsed event for the timer.
+                aTimer.Elapsed += UpdateProgressBar ;
+
+                // Start the timer
+                aTimer.Enabled = true;
             }
             else
             {
@@ -134,25 +139,19 @@ namespace Looper
         }
 
 
-        private void LoopStream_OnResetProgressBar(LoopStream loopStream)
+        private void UpdateProgressBar(object source, ElapsedEventArgs e)
         {
-            Progress = 0;
-            SmoothlyTransition(LengthInSeconds);
-        }
-
-        public async Task SmoothlyTransition(double lengthInSeconds)
-        {
-            double targetValue = 100;
-            Progress = 0;
-            double step = targetValue / (lengthInSeconds * 100); // 1000 steps per second
-
-            for (int i = 0; i <= lengthInSeconds * 10; i++)
+            if (Player.IsPlaying)
             {
-                Progress = i * step;
-                await Task.Delay(10);
+                double CurrentTimeMilliseconds = Player.LoopStream.CurrentTime.TotalMilliseconds;
+                Debug.WriteLine(CurrentTimeMilliseconds + " czas: " + Player.LoopStream.CurrentTime);
+                Progress = CurrentTimeMilliseconds / (LengthInSeconds*10);
+            }
+            else
+            {
+                aTimer.Enabled = false;
             }
         }
-
 
 
         #endregion
@@ -170,7 +169,7 @@ namespace Looper
                 {
                     return;
                 }
-                Player.Delay((int)delay); // Aktualizacja głośności w AudioPlayer
+                Player.LoopStream.Skip((int)delay); // Aktualizacja głośności w AudioPlayer
             }
         }
         #endregion
